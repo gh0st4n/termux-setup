@@ -256,3 +256,15 @@ echo "Zig versi $VERSION ($ARCH) terinstall."
 echo "Path: ~/.lang/zig"
 echo "==============================="
 
+read -p "Apakah ingin Restart Termux? [Y/n]: " confirm
+confirm=${confirm:-Y}
+
+if [[ "$confirm" =~ ^[Yy]$ ]]; then
+    echo "Merestart Termux..."
+    exec termux-reload-settings
+    exit 0
+else
+    echo "Lewati restart. Silakan restart Termux manual jika diperlukan. Jalankan . .bashrc"
+fi
+
+
