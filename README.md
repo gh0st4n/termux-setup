@@ -10,7 +10,9 @@ Script ini melakukan setup Termux lengkap dengan:
 
 ## 📦 Cara Menggunakan
 
-Ada **2 metode**: 1) Clone repo 2) Copy--paste manual
+Ada **2 metode**: 
+ 1) Clone repo
+ 2) Copy--paste manual
 
 # 1️⃣ Instalasi via Git Clone
 
