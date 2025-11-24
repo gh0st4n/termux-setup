@@ -1,4 +1,4 @@
-# T4n Termux Setup + Zig Version Selector
+# T4n Termux Setup + Zig & IDE
 
 Script ini melakukan setup Termux lengkap dengan:
 
