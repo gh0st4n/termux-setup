@@ -15,7 +15,7 @@ Ada **2 metode**: 1) Clone repo 2) Copy--paste manual
 # 1️⃣ Instalasi via Git Clone
 
 ``` sh
-git clone https://github.com/<username>/<repo>.git](https://github.com/gh0st4n/termux-setup.git
+git clone https://github.com/gh0st4n/termux-setup.git
 cd termux-setup
 
 chmod +x setup.sh
@@ -27,8 +27,11 @@ chmod +x setup.sh
 1.  Buka Termux, Lalu Ketik :
 
 ``` sh
-nano setup.sh
+$ termux-change-repo
+$ nano setup.sh
 ```
+
+**Repo : Pilih 'Mirror Group' lalu 'All Mirror/Mirror in Asia'**
 
 2.  Copy Kode ini, kemudian **paste** ke nano.
 ``` sh
