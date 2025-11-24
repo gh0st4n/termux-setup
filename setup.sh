@@ -1,221 +1,55 @@
 #!/data/data/com.termux/files/usr/bin/bash
 
-# ===================================
-# T4n Custom Termux Setup + Zig Menu
-# ===================================
-
-set -e
-
 # === 0. AKSES STORAGE ===
 termux-setup-storage
 
-# === 1. UPDATE & UPGRADE ===
+# === 1. UPDATE SISTEM ===
 pkg update -y && pkg upgrade -y
 
-# === 2. INSTALL PACKAGE DASAR ===
+# === 2. INSTALL PACKAGE UTAMA ===
 pkg install -y curl wget git neovim unzip bat eza tree rxfetch
 
-# ============================================
-#        ZIG DOWNLOAD LINK MAPPING
-# ============================================
+# === 3. DETEKSI ARSITEKTUR ===
+ARCH_RAW=$(uname -m)
 
-declare -A ZIG_LINKS=(
-  # --- Versions with no binaries ---
-  ["0.1.1_aarch64"]=""
-  ["0.1.1_armv7a"]=""
-  ["0.1.1_arm"]=""
-
-  ["0.2.0_aarch64"]=""
-  ["0.2.0_armv7a"]=""
-  ["0.2.0_arm"]=""
-
-  ["0.3.0_aarch64"]=""
-  ["0.3.0_armv7a"]=""
-  ["0.3.0_arm"]=""
-
-  ["0.4.0_aarch64"]=""
-  ["0.4.0_armv7a"]=""
-  ["0.4.0_arm"]=""
-
-  ["0.5.0_aarch64"]=""
-  ["0.5.0_armv7a"]=""
-  ["0.5.0_arm"]=""
-
-  # --- 0.6.x ---
-  ["0.6.0_aarch64"]="https://ziglang.org/download/0.6.0/zig-linux-aarch64-0.6.0.tar.xz"
-  ["0.6.0_armv7a"]="https://ziglang.org/download/0.6.0/zig-linux-armv7a-0.6.0.tar.xz"
-
-  # --- 0.7.x ---
-  ["0.7.0_aarch64"]="https://ziglang.org/download/0.7.0/zig-linux-aarch64-0.7.0.tar.xz"
-  ["0.7.0_armv7a"]="https://ziglang.org/download/0.7.0/zig-linux-armv7a-0.7.0.tar.xz"
-
-  ["0.7.1_aarch64"]="https://ziglang.org/download/0.7.1/zig-linux-aarch64-0.7.1.tar.xz"
-  ["0.7.1_armv7a"]="https://ziglang.org/download/0.7.1/zig-linux-armv7a-0.7.1.tar.xz"
-
-  # --- 0.8.x ---
-  ["0.8.0_aarch64"]="https://ziglang.org/download/0.8.0/zig-linux-aarch64-0.8.0.tar.xz"
-  ["0.8.0_armv7a"]="https://ziglang.org/download/0.8.0/zig-linux-armv7a-0.8.0.tar.xz"
-
-  ["0.8.1_aarch64"]="https://ziglang.org/download/0.8.1/zig-linux-aarch64-0.8.1.tar.xz"
-  ["0.8.1_armv7a"]="https://ziglang.org/download/0.8.1/zig-linux-armv7a-0.8.1.tar.xz"
-
-  # --- 0.9.x ---
-  ["0.9.0_aarch64"]="https://ziglang.org/download/0.9.0/zig-linux-aarch64-0.9.0.tar.xz"
-  ["0.9.0_armv7a"]="https://ziglang.org/download/0.9.0/zig-linux-armv7a-0.9.0.tar.xz"
-
-  ["0.9.1_aarch64"]="https://ziglang.org/download/0.9.1/zig-linux-aarch64-0.9.1.tar.xz"
-  ["0.9.1_armv7a"]="https://ziglang.org/download/0.9.1/zig-linux-armv7a-0.9.1.tar.xz"
-
-  # --- 0.10.x ---
-  ["0.10.0_aarch64"]="https://ziglang.org/download/0.10.0/zig-linux-aarch64-0.10.0.tar.xz"
-  ["0.10.0_armv7a"]="https://ziglang.org/download/0.10.0/zig-linux-armv7a-0.10.0.tar.xz"
-
-  ["0.10.1_aarch64"]="https://ziglang.org/download/0.10.1/zig-linux-aarch64-0.10.1.tar.xz"
-  ["0.10.1_armv7a"]="https://ziglang.org/download/0.10.1/zig-linux-armv7a-0.10.1.tar.xz"
-
-  # --- 0.11.x ---
-  ["0.11.0_aarch64"]="https://ziglang.org/download/0.11.0/zig-linux-aarch64-0.11.0.tar.xz"
-  ["0.11.0_armv7a"]="https://ziglang.org/download/0.11.0/zig-linux-armv7a-0.11.0.tar.xz"
-
-  # --- 0.12.x ---
-  ["0.12.0_aarch64"]="https://ziglang.org/download/0.12.0/zig-linux-aarch64-0.12.0.tar.xz"
-  ["0.12.0_armv7a"]="https://ziglang.org/download/0.12.0/zig-linux-armv7a-0.12.0.tar.xz"
-
-  ["0.12.1_aarch64"]="https://ziglang.org/download/0.12.1/zig-linux-aarch64-0.12.1.tar.xz"
-  ["0.12.1_armv7a"]="https://ziglang.org/download/0.12.1/zig-linux-armv7a-0.12.1.tar.xz"
-
-  # --- 0.13.0 ---
-  ["0.13.0_aarch64"]="https://ziglang.org/download/0.13.0/zig-linux-aarch64-0.13.0.tar.xz"
-  ["0.13.0_armv7a"]="https://ziglang.org/download/0.13.0/zig-linux-armv7a-0.13.0.tar.xz"
-
-  # --- 0.14.x ---
-  ["0.14.0_aarch64"]="https://ziglang.org/download/0.14.0/zig-linux-aarch64-0.14.0.tar.xz"
-  ["0.14.0_armv7a"]="https://ziglang.org/download/0.14.0/zig-linux-armv7a-0.14.0.tar.xz"
-
-  ["0.14.1_aarch64"]="https://ziglang.org/download/0.14.1/zig-linux-aarch64-0.14.1.tar.xz"
-  ["0.14.1_armv7a"]="https://ziglang.org/download/0.14.1/zig-linux-armv7a-0.14.1.tar.xz"
-
-  # --- 0.15.x ---
-  ["0.15.1_aarch64"]="https://ziglang.org/download/0.15.1/zig-linux-aarch64-0.15.1.tar.xz"
-  ["0.15.1_arm"]="https://ziglang.org/download/0.15.1/zig-arm-linux-0.15.1.tar.xz"
-
-  ["0.15.2_aarch64"]="https://ziglang.org/download/0.15.2/zig-linux-aarch64-0.15.2.tar.xz"
-  ["0.15.2_arm"]="https://ziglang.org/download/0.15.2/zig-arm-linux-0.15.2.tar.xz"
-)
-
-# ============================================
-#            MENU VERSI ZIG
-# ============================================
-
-VERSIONS=(
-  0.1.1 0.2.0 0.3.0 0.4.0 0.5.0
-  0.6.0 0.7.0 0.7.1
-  0.8.0 0.8.1
-  0.9.0 0.9.1
-  0.10.0 0.10.1
-  0.11.0
-  0.12.0 0.12.1
-  0.13.0
-  0.14.0 0.14.1
-  0.15.1 0.15.2
-)
-
-echo "===== PILIH VERSI ZIG ====="
-i=1
-for v in "${VERSIONS[@]}"; do
-  echo "$i) $v"
-  ((i++))
-done
-
-read -p "Pilih angka versi: " VSEL
-VERSION="${VERSIONS[VSEL-1]}"
-
-# ============================================
-#            MENU ARSITEKTUR
-# ============================================
-
-ARCHS=(aarch64 armv7a arm)
-
-echo
-echo "===== PILIH ARSITEKTUR ====="
-echo "1) aarch64 (64-bit)"
-echo "2) armv7a (32-bit)"
-echo "3) arm (32-bit = 0.15.1 & 0.15.2)"
-
-read -p "Pilih angka arsitektur: " ASEL
-ARCH="${ARCHS[ASEL-1]}"
-
-KEY="${VERSION}_${ARCH}"
-URL="${ZIG_LINKS[$KEY]}"
-
-if [[ -z "$URL" ]]; then
-  echo "[ERROR] Zig versi $VERSION untuk arsitektur $ARCH tidak tersedia!"
-  exit 1
+if [[ "$ARCH_RAW" == "aarch64" ]]; then
+    ARCH="aarch64"
+    ZIG_URL="https://ziglang.org/download/0.15.2/zig-aarch64-linux-0.15.2.tar.xz"
+elif [[ "$ARCH_RAW" == "armv7l" || "$ARCH_RAW" == "armv8l" ]]; then
+    ARCH="arm"
+    ZIG_URL="https://ziglang.org/download/0.15.2/zig-arm-linux-0.15.2.tar.xz"
+else
+    echo "Arsitektur tidak dikenali: $ARCH_RAW"
+    exit 1
 fi
 
-echo "[*] Download Zig $VERSION ($ARCH)..."
-wget "$URL" -O zig.tar.xz
+echo "[*] Arsitektur terdeteksi: $ARCH"
+echo "[*] Download Zig dari: $ZIG_URL"
 
-mkdir -p ~/.lang
-rm -rf ~/.lang/zig
-tar -xf zig.tar.xz -C ~/.lang
-mv ~/.lang/zig-* ~/.lang/zig
+# === 4. INSTALL ZIG ===
+wget "$ZIG_URL" -O zig.tar.xz
+mkdir -p $HOME/.lang
+tar -xf zig.tar.xz
+rm zig.tar.xz
 
-echo 'export PATH="$HOME/.lang/zig:$PATH"' >> ~/.bashrc
+# cari folder zig hasil extract (pattern aman)
+ZIG_FOLDER=$(find . -maxdepth 1 -type d -name "zig-*" | head -1)
+mv "$ZIG_FOLDER" "$HOME/.lang/zig"
 
-# ====================
-#    INSTALL NVCHAD
-# ====================
-
-echo "[*] Install NVChad..."
-rm -rf $HOME/.config/nvim
-git clone https://github.com/NvChad/starter $HOME/.config/nvim
-cd ~/.config/nvim
-rm -rf .git
-
-# ===========
-#    Other
-# ===========
-
-# === INSTALL FONT FIRA CODE NERD ===
-echo "[*] Mengunduh FiraCode Nerd Font..."
+# === 5. INSTALL FONTS ===
+echo "[*] Download font FiraCode Nerd Font..."
 wget https://github.com/ryanoasis/nerd-fonts/releases/download/v3.4.0/FiraCode.zip -O FiraCode.zip
 unzip -o FiraCode.zip -d FiraCode
 rm FiraCode.zip
 
-mkdir -p $HOME/.termux/fonts
+# rename → font.ttf
 mv FiraCode/FiraCodeNerdFontMono-Regular.ttf font.ttf
+mkdir -p $HOME/.termux
 mv font.ttf $HOME/.termux/
+
 rm -rf FiraCode
 
-echo "[*] Menyiapkan .bashrc..."
-
-cat > $HOME/.bashrc << 'EOF'
-# === TERMUX CUSTOM CONFIG ===
-
-# PATH Zig
-export PATH="$HOME/.lang/zig:$PATH"
-
-# EDITOR default
-export EDITOR="nvim"
-
-# === ALIAS KHUSUS ===
-alias cat='bat --theme=base16'
-alias ls='eza --icons=always --color=always'
-alias la='eza --icons=always --color=always -a'
-alias ll='eza --icons=always --color=always -la'
-alias tree='eza --icons=always --tree'
-alias grep='grep --color=auto'
-alias update='pkg update -y && pkg upgrade -y'
-
-# === PROMPT CUSTOM ===
-PS1='\n\[\e[1;31m\]┌──>\[\e[0m\] [ \u @ \h ] <<|= User =|>> [ \d ] [ \W ] \n\[\e[1;31m\]└{₿}->>\[\e[0m\] '
-EOF
-
-# Reload .bashrc
-source $HOME/.bashrc
-
-echo "[*] Menyiapkan .termux/colors.properties..."
+# === 6. BUAT THEME TERMINAL (color.properties) ===
 cat > $HOME/.termux/colors.properties << 'EOF'
 foreground:   #bfc9db
 background:   #0f0f17
@@ -245,26 +79,54 @@ color7:       #bfc9db
 color15:      #858893
 EOF
 
-# ============
-#    FINISH
-# ============
+# === 7. BUAT .bashrc BARU ===
+cat > $HOME/.bashrc << 'EOF'
+# === TERMUX CUSTOM CONFIG ===
+clear
+rxfetch
 
-echo -e "\n==============================="
-echo "[*] SETUP SELESAI!"
-echo "Restart Termux."
-echo "Zig versi $VERSION ($ARCH) terinstall."
-echo "Path: ~/.lang/zig"
-echo "==============================="
+# PATH Zig
+export PATH="$HOME/.lang/zig:$PATH"
 
-read -p "Apakah ingin Restart Termux? [Y/n]: " confirm
-confirm=${confirm:-Y}
+# Default editor
+export EDITOR="nvim"
 
-if [[ "$confirm" =~ ^[Yy]$ ]]; then
-    echo "Merestart Termux..."
-    exec termux-reload-settings
-    exit 0
+# ALIAS
+alias cat='bat --theme=base16'
+alias ls='eza --icons=always --color=always'
+alias la='eza --icons=always --color=always -a'
+alias ll='eza --icons=always --color=always -la'
+alias tree='eza --icons=always --tree'
+alias grep='grep --color=auto'
+alias update='pkg update -y && pkg upgrade -y'
+
+# Prompt
+PS1='\n\[\e[1;31m\]┌──>\[\e[0m\] [ \u @ \h ] <<|= User =|>> [ \d ] [ \W ] \n\[\e[1;31m\]└{₿}->>\[\e[0m\] '
+EOF
+
+source $HOME/.bashrc
+
+# === 8. INSTALL NVCHAD ===
+rm -rf $HOME/.config/nvim
+git clone https://github.com/NvChad/starter $HOME/.config/nvim
+
+echo -e "\n==================================="
+echo "[*] SETUP LENGKAP!"
+echo "- Arsitektur: $ARCH"
+echo "- Zig terinstall di ~/.lang/zig"
+echo "- Font aktif: ~/.termux/font.ttf"
+echo "- Theme aktif: ~/.termux/color.properties"
+echo "Restart Termux untuk menerapkan font + theme."
+echo "Restar : . .bashrc"
+echo "Lalu Jalankan perintah nvim"
+echo "==================================="
+
+read -p "Apakah ingin restart Termux? [Y/n]: " RESP
+RESP=${RESP:-Y}
+
+if [[ "$RESP" == "Y" || "$RESP" == "y" ]]; then
+    echo "[*] Restarting Termux..."
+    termux-reload-settings
 else
-    echo "Lewati restart. Silakan restart Termux manual jika diperlukan. Jalankan . .bashrc"
+    echo "[*] Tidak restart. Restart manual jika tampilan belum berubah."
 fi
-
-
